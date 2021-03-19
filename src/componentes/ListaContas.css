@@ -1,0 +1,17 @@
+.Table-Contas-Head{
+   background-color: #253237;
+   color: #FFF;
+   text-align: center;
+   font-family: sans-serif;
+   font-style: normal;
+
+}
+.Table-Contas-Body{
+    justify-content: center;
+    background-color: #FFF;
+    align-items: center;
+    text-align: center;
+    color: #333;
+    font-family: sans-serif;
+    
+}
