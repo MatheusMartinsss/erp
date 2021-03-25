@@ -39,8 +39,29 @@ const ContasReducer = createSlice({
         contaAdd(state, action){
             state.push(action.payload)
         },
+        contaEdit(state, action){
+            const {ID, Cliente, Valor, DataEmissao, DataVencimento, Historico} = action.payload;
+            const existingCount = state.find((contas) => contas.ID === ID);
+            if(existingCount){
+                existingCount.Cliente = Cliente;
+                existingCount.Valor = Valor;
+                existingCount.DataEmissao = DataEmissao;
+                existingCount.DataVencimento = DataVencimento;
+                existingCount.Historico = Historico;
+            }
+        },
+        contaDelete(state, action){
+            const {ID} = action.payload;
+            const deleteCount = state.find((contas) => contas.ID === ID )
+            if(deleteCount){
+                return state.filter((contas) => contas.ID !== ID)
+            }
+
+        }
     },
 })
 
 export const {contaAdd} = ContasReducer.actions;
+export const {contaEdit} = ContasReducer.actions;
+export const {contaDelete} = ContasReducer.actions;
 export default ContasReducer.reducer;

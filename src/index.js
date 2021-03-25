@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './screens/Contas';
+import App from './screens/Routers';
 import {Provider} from 'react-redux'
 import store from './redux/store'
 

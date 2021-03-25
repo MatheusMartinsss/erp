@@ -1,81 +1,50 @@
-import {  useState } from 'react'
 import React from 'react'
-import {format} from 'date-fns'
-import './Lancarconta.css'
-import NumberFormat from 'react-number-format'
+import {useState} from 'react'
 import { Container, Form, Row, Col,  Button, ButtonToolbar } from 'react-bootstrap'
 import {useSelector, useDispatch} from 'react-redux'
-import {contaAdd} from '../redux/reducers/ContasReducer'
-import Modal from 'react-modal'
-import 'bootstrap/dist/css/bootstrap.min.css';
-function Lancarconta(){
-    const [ModalConta, setModalConta] = useState(false)
-    const [NomeCliente, setNomeCliente] = useState('')
-    const [ValorCliente, setValorCliente] = useState('')
-    const [CpfCliente, setCpfCliente] = useState('')
-    const [TipoConta, setTipoConta] = useState('')
-    const [TelefoneCliente, setTelefone] = useState('')
-    const [EmailCliente, setEmail] = useState('')
-    const [DataEmissao, setDataEmissao] = useState( format(new Date(), 'yyyy-MM-dd'))
-    const [DataVencimento, setDataVencimento] = useState(format(new Date(), 'yyyy-MM-dd'))
-    const [Historico, setHistorico] = useState('');
-    const [Conta, setConta] = useState([]);
-    const Numero = useSelector((state) => state.contas.length);
-    const Dispatch = useDispatch();
-
-    function SalvarDados(){
-        if(NomeCliente && ValorCliente){
-            Dispatch(
-                contaAdd({
-                    ID: Numero + 1,
-                    Cliente: NomeCliente,
-                    Valor: ValorCliente,
-                    DataEmissao: format(new Date(DataEmissao), 'dd/MM/yyyy'),
-                    DataVencimento: format(new Date(DataVencimento), 'dd/MM/yyyy'),
-                    Historico: Historico,
-                })
-            )
-            LimparDados()    
-            setModalConta(false)
-        };
-
-    }
-    function SendConta(){
-        LimparDados()
-      
-    }
+import {format} from 'date-fns'
+import NumberFormat from 'react-number-format'
+import {contaEdit} from '../redux/reducers/ContasReducer'
+function EditCount(props){
     
-    function LimparDados(){
-        setNomeCliente('')
-        setValorCliente('')
-        setDataEmissao(format(new Date(), 'yyyy-MM-dd'))
-        setDataVencimento(format(new Date(), 'yyyy-MM-dd'))
-        setHistorico('')
-        setCpfCliente('')
-        setTipoConta('')
-        setTelefone('')
-        setEmail('')
-        setConta([])
-    }
-    function Open(){
-        setModalConta(!ModalConta)
+    const [NomeCliente, setNomeCliente] = useState(props.NomeCliente)
+    const Numero = props.ID;
+    const [ValorCliente, setValorCliente] = useState(props.ValorCliente)
+    const [CpfCliente, setCpfCliente] = useState(props.CpfCliente)
+    const [TipoConta, setTipoConta] = useState(props.TipoConta)
+    const [TelefoneCliente, setTelefone] = useState(props.TelefoneCliente)
+    const [EmailCliente, setEmail] = useState()
+    let dataEmissaoString = props.DataEmissao.split("/");
+    let data = new Date(dataEmissaoString[2], dataEmissaoString[1]-1, dataEmissaoString[0])
+    const [DataEmissao, setDataEmissao] = useState(format(new Date(data), 'yyyy-MM-dd'))
+    let dataVencimentoString = props.DataVencimento.split("/")
+    let dataVencimento = new Date(dataVencimentoString[2], dataVencimentoString[1]-1, dataVencimentoString[0])
+    const [DataVencimento, setDataVencimento] = useState(format(new Date(dataVencimento), 'yyyy-MM-dd'))
+    const [Historico, setHistorico] = useState(props.Historico);
+    const [Conta, setConta] = useState([]);
+    const contas = useSelector((state) => state.contas)
+    const Dispatch = useDispatch();
+    function Salvar(){
+        Dispatch(
+            contaEdit({
+                ID: Numero,
+                Cliente: NomeCliente,
+                Valor: ValorCliente,
+                DataEmissao: format(new Date(DataEmissao), 'dd/MM/yyyy'),
+                DataVencimento: format(new Date(DataVencimento), 'dd/MM/yyyy'),
+                Historico: Historico,
+            })
+            
+        )
     }
     return(
-        <Container>
-            <ButtonToolbar>
-                <Button onClick = { () => Open()}> Nova Conta + </Button>
-            </ButtonToolbar>
-            <Modal
-                isOpen = {ModalConta}
-                shouldCloseOnEsc = {true}
-                onRequestClose = {() => Open()}          
-            >
-                 <Form>
+        <container>
+               <Form>
                 <Row>
                     <Col>
                         <Form.Group>
                             <Form.Label>Numero</Form.Label>
-                            <Form.Control value = {Numero+1} disabled = {true}></Form.Control>
+                            <Form.Control value = {Numero} disabled = {true}></Form.Control>
                         </Form.Group>
                     </Col>
                     <Col>
@@ -161,15 +130,13 @@ function Lancarconta(){
                 </Row>
                 <Row>
                     <Col style = {{justifyContent:'center', alignItems:'center', display:'flex', margin:'10'}}>
-                        <Button onClick = {() => SalvarDados()}>Salvar</Button>
-                        <Button onClick = {() => LimparDados()}>Limpar</Button>
+                       <Button onClick = {() => Salvar()}> Salvar</Button>
                     </Col>
                 </Row>
             </Form>
-            </Modal>    
-           
-        </Container>
+        </container>
+
     )
-    
 }
-export default Lancarconta;
+
+export default EditCount;

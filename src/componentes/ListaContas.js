@@ -1,10 +1,16 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { Container, Row, Col, Table, InputGroup, FormCheck, ButtonToolbar, Button } from 'react-bootstrap';
+import { Container,  Table,  FormCheck, Button, Modal } from 'react-bootstrap';
 import {useEffect, useState} from 'react'
 import './ListaContas.css'
-import { useSelector } from 'react-redux';
-function ListaContas (){
+import { useSelector, useDispatch } from 'react-redux';
+import {contaDelete} from '../redux/reducers/ContasReducer'
+import LancarConta from './MyModal'
+
+function ListaContas (props){
     const Contas = useSelector((state) => state.contas)
+    const [editarConta, setEditarConta] = useState(false)
+    const [contaEdit, setContaEdit] = useState()
+    const Dispatch = useDispatch()
         
     const [contasSelected, setSelected] = useState([])
     function cSelect(e){
@@ -17,11 +23,23 @@ function ListaContas (){
             console.log(' Adicionou um novo valor',contasSelected)
         }    
     }
-    useEffect(() =>{
-        console.log( 'Use effect result',contasSelected)
-    }, [contasSelected])
+    function Editar(e){
+       setEditarConta(!editarConta)
+       setContaEdit(e)  
+    }
+    function CloseModal(){
+        setEditarConta(false)
+    }
+    function Excluir(e){
+        Dispatch(
+            contaDelete({
+                ID: e
+            })
+        )     
+    }
     return (
         <Container  fluid>
+            {editarConta && <LancarConta open = {editarConta} contaID = {contaEdit} CloseModal = {CloseModal} />}
             <Table bordered = {true} >
                 <thead className = 'Table-Contas-Head'>
                     <tr>
@@ -32,6 +50,7 @@ function ListaContas (){
                         <th>Data de Emissao</th>
                         <th>Data de Vencimento</th>
                         <th>Historico</th>
+                        <th>#</th>
                     </tr>
                 </thead>
                 <tbody className = 'Table-Contas-Body'>
@@ -44,14 +63,20 @@ function ListaContas (){
                             <td>{e.DataEmissao}</td>
                             <td>{e.DataVencimento}</td>
                             <td>{e.Historico}</td>
-                        </tr>
-                    ))} 
-                </tbody>
-               </Table>
-              
-
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                    <button type="button" onClick = {() => Excluir(e.ID)} class="btn btn-danger">Excluir</button>
+                                    <button type="button" onClick = { () => Editar(e.ID)} class="btn btn-warning">Editar</button>
+                                </div>
+                                </td>
+                            </tr>
+                        ))} 
+                    </tbody>
+            </Table>    
+        
         </Container>
     )
-}
+}    
+
 
 export default ListaContas;
