@@ -48,6 +48,7 @@ const ContasReducer = createSlice({
                 existingCount.DataEmissao = DataEmissao;
                 existingCount.DataVencimento = DataVencimento;
                 existingCount.Historico = Historico;
+            
             }
         },
         contaDelete(state, action){

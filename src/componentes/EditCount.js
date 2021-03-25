@@ -33,6 +33,7 @@ function EditCount(props){
                 DataEmissao: format(new Date(DataEmissao), 'dd/MM/yyyy'),
                 DataVencimento: format(new Date(DataVencimento), 'dd/MM/yyyy'),
                 Historico: Historico,
+                
             })
             
         )
