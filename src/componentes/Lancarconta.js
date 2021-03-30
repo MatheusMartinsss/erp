@@ -5,7 +5,7 @@ import './Lancarconta.css'
 import NumberFormat from 'react-number-format'
 import { Container, Form, Row, Col,  Button, ButtonToolbar } from 'react-bootstrap'
 import {useSelector, useDispatch} from 'react-redux'
-import {contaAdd} from '../redux/reducers/ContasReducer'
+import {contaAdd, createAcount} from '../redux/reducers/ContasReducer'
 import Modal from 'react-modal'
 import 'bootstrap/dist/css/bootstrap.min.css';
 function Lancarconta(){
@@ -20,19 +20,20 @@ function Lancarconta(){
     const [DataVencimento, setDataVencimento] = useState(format(new Date(), 'yyyy-MM-dd'))
     const [Historico, setHistorico] = useState('');
     const [Conta, setConta] = useState([]);
-    const Numero = useSelector((state) => state.contas.length);
+    const Numero = useSelector((state) => state.contas.contas.length);
+    const Contas1 = useSelector((state) => state.contas)
     const Dispatch = useDispatch();
 
     function SalvarDados(){
         if(NomeCliente && ValorCliente){
             Dispatch(
-                contaAdd({
-                    ID: Numero + 1,
-                    Cliente: NomeCliente,
-                    Valor: ValorCliente,
-                    DataEmissao: format(new Date(DataEmissao), 'dd/MM/yyyy'),
-                    DataVencimento: format(new Date(DataVencimento), 'dd/MM/yyyy'),
-                    Historico: Historico,
+                createAcount({
+                    documento: Numero + 1,
+                    nome: NomeCliente,
+                    valor: ValorCliente,
+                    historico: Historico,
+                    dataEmissao: new Date(DataEmissao),
+                    dataVencimento: new Date(DataVencimento),
                 })
             )
             LimparDados()    
@@ -58,6 +59,7 @@ function Lancarconta(){
         setConta([])
     }
     function Open(){
+        console.log(Contas1)
         setModalConta(!ModalConta)
     }
     return(
@@ -121,19 +123,8 @@ function Lancarconta(){
                     <Col>
                         <Form.Group>
                             <Form.Label>Valor R$</Form.Label>
-                            <NumberFormat 
-                                thousandSeparator = '.' 
-                                decimalSeparator = ','
-                                thousandsGroupStyle = 'thousand'
-                                decimalScale = '2'
-                                prefix = 'R$'
-                                fixedDecimalScale = {true}
-                                value = {ValorCliente} 
-                                className = 'form-control'
-                                onChange = {e => setValorCliente(e.target.value)} 
-                                placeholder = 'Valor R$' type = 'value'>
-
-                            </NumberFormat>
+                            <Form.Control value = {ValorCliente} onChange = {e => setValorCliente(e.target.value)}  placeholder = 'Email' type = 'email'></Form.Control>
+                            
                         </Form.Group>
                     </Col>
                 </Row>

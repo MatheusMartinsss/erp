@@ -3,16 +3,20 @@ import { Container,  Table,  FormCheck, Button, Modal } from 'react-bootstrap';
 import {useEffect, useState} from 'react'
 import './ListaContas.css'
 import { useSelector, useDispatch } from 'react-redux';
-import {contaDelete} from '../redux/reducers/ContasReducer'
+import {contaDelete, selectCounts, allCounts, fetchCounts} from '../redux/reducers/ContasReducer'
 import LancarConta from './MyModal'
+import axios from 'axios'
 
 function ListaContas (props){
-    const Contas = useSelector((state) => state.contas)
     const [editarConta, setEditarConta] = useState(false)
     const [contaEdit, setContaEdit] = useState()
-    const Dispatch = useDispatch()
-        
+    const Contas = useSelector((state) => state.contas.contas)
     const [contasSelected, setSelected] = useState([])
+    const  Dispatch = useDispatch()
+    useEffect(() =>{
+        Dispatch(fetchCounts())
+    },[Dispatch]) 
+    console.log('resultado', Contas)
     function cSelect(e){
         var Teste = contasSelected.findIndex(obj => obj.ID === e )
         if(Teste !== -1){
@@ -27,6 +31,7 @@ function ListaContas (props){
        setEditarConta(!editarConta)
        setContaEdit(e)  
     }
+   
     function CloseModal(){
         setEditarConta(false)
     }
@@ -43,7 +48,6 @@ function ListaContas (props){
             <Table bordered = {true} >
                 <thead className = 'Table-Contas-Head'>
                     <tr>
-                        <th>#</th>
                         <th>Documento</th>
                         <th>Cliente</th>
                         <th>Valor</th>
@@ -53,25 +57,19 @@ function ListaContas (props){
                         <th>#</th>
                     </tr>
                 </thead>
-                <tbody className = 'Table-Contas-Body'>
-                    {Contas.map( e =>(
-                        <tr key = {e.ID}>
-                            <FormCheck id = {e.ID}  type = "checkbox" onChange = { () => cSelect(e.ID)}/>
-                            <td>{e.ID}</td>
-                            <td>{e.Cliente}</td>
-                            <td>{e.Valor}</td>
-                            <td>{e.DataEmissao}</td>
-                            <td>{e.DataVencimento}</td>
-                            <td>{e.Historico}</td>
-                            <td>
-                                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                                    <button type="button" onClick = {() => Excluir(e.ID)} class="btn btn-danger">Excluir</button>
-                                    <button type="button" onClick = { () => Editar(e.ID)} class="btn btn-warning">Editar</button>
-                                </div>
-                                </td>
-                            </tr>
-                        ))} 
-                    </tbody>
+                <tbody>
+                    {Contas.map(obj =>(
+                        <tr className = "Table-Contas-Body" key = {obj._id}>
+                            <th>{obj.Documento}</th>
+                            <th>{obj.Nome}</th>
+                            <th>{obj.Valor}</th>
+                            <th>{obj.DataEmissao}</th>
+                            <th>{obj.DataVencimento}</th>
+                            <th>{obj.Historico}</th> 
+                        </tr>
+                    ))}
+                </tbody>
+
             </Table>    
         
         </Container>

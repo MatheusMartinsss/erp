@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Col, Container, Row } from 'react-bootstrap'
 import LancarConta from '../componentes/Lancarconta'
 import ListaContas from '../componentes/ListaContas'
+import {useDispatch} from 'react-redux'
 import './Contas.css'
 
 function Contas(){

@@ -1,66 +1,62 @@
-import {createSlice} from '@reduxjs/toolkit'
+import {createAsyncThunk, createEntityAdapter, createSelector, createSlice} from '@reduxjs/toolkit'
+import axios from 'axios'
 
+export const fetchCounts = createAsyncThunk("contas/fetchCounts", async () =>{
+    const response = await axios.get('http://localhost:8080/api/teste')
+    return  response.data
+})
+export const editCount = createAsyncThunk('contas/editCount', async(id, data) =>{
+    
+})
+export const createAcount = createAsyncThunk("contas/createAcount", async( countData) =>{
+    const count = countData;
+    console.log('api call',countData)
+    axios.post('http://localhost:8080/api/teste', {
+        documento: count.documento,
+        nome: count.nome,
+        valor: count.valor,
+        historico: count.historico,
+        dataEmissao: count.dataEmissao,
+        dataVencimento: count.dataVencimento
 
-const initialState =  [
-{
-    ID: 1,
-    Cliente: 'User1',
-    Valor: '1.500,00',
-    DataEmissao: '25/11/2020',
-    DataVencimento: '25/11/2020',
-    Historico: 'Conta em aberto'
-},{
-    ID: 2,
-    Cliente: 'User2',
-    Valor: '1.400,00',
-    DataEmissao: '25/11/2020',
-    DataVencimento: '25/11/2020',
-    Historico: 'Conta em aberto'
-},{
-    ID: 3,
-    Cliente: 'User3',
-    Valor: '1.300,00',
-    DataEmissao: '25/11/2020',
-    DataVencimento: '25/11/2020',
-    Historico: 'Conta em aberto'
-},{
-    ID: 4,
-    Cliente: 'User4',
-    Valor: '1.200,00',
-    DataEmissao: '25/11/2020',
-    DataVencimento: '25/11/2020',
-    Historico: 'Teste'
-},]
+        
+    })
+    .then(function(response){
+        console.log(response)
+    })
+    .catch(function(error){
+        console.log('teste',error)
+    })    
+
+})
 const sliceName = 'contas'
 const ContasReducer = createSlice({
     name: sliceName,
-    initialState,
-    reducers:{
-        contaAdd(state, action){
-            state.push(action.payload)
-        },
-        contaEdit(state, action){
-            const {ID, Cliente, Valor, DataEmissao, DataVencimento, Historico} = action.payload;
-            const existingCount = state.find((contas) => contas.ID === ID);
-            if(existingCount){
-                existingCount.Cliente = Cliente;
-                existingCount.Valor = Valor;
-                existingCount.DataEmissao = DataEmissao;
-                existingCount.DataVencimento = DataVencimento;
-                existingCount.Historico = Historico;
-            
-            }
-        },
-        contaDelete(state, action){
-            const {ID} = action.payload;
-            const deleteCount = state.find((contas) => contas.ID === ID )
-            if(deleteCount){
-                return state.filter((contas) => contas.ID !== ID)
-            }
-
-        }
+    initialState:{
+        contas: [],
+        status: null
     },
+    reducers:{
+
+    },
+    extraReducers: {
+        [fetchCounts.fulfilled]: (state, {payload}) =>{
+            state. contas = payload
+            state. status = 'success'
+        },
+        [fetchCounts.pending]: (state, action) =>{
+            state. status = 'Loading'
+            state. contas = [{}]
+        },
+        [createAcount.fulfilled]: (state, action) =>{
+            state = action.payload
+            console.log('action payload',action.payload)
+        }
+       
+    }
 })
+
+
 
 export const {contaAdd} = ContasReducer.actions;
 export const {contaEdit} = ContasReducer.actions;

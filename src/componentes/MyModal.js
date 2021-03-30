@@ -12,7 +12,7 @@ const MyModal = (props) => {
     const [contaID, setcontaID] = useState(props.contaID)
     const conta = useSelector((state) => state.contas)
     const teste = conta.filter(c => c.ID === contaID)
-    console.log(teste)
+  
     return(
       
            <Modal
